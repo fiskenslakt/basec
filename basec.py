@@ -1,3 +1,5 @@
+import base64
+
 import click
 
 
@@ -7,6 +9,25 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     pass
+
+
+@cli.command()
+@click.option('--from', '-f', 'orig', flag_value='from', help='Convert from base64 encoded string')
+@click.option('--to', '-t', 'orig', flag_value='to', help='Convert to base64 encoded string')
+@click.option('--url', '-u', is_flag=True, help='Use url-safe alternative characters (hyphen and underscore)')
+@click.argument('convert', nargs=-1, required=True)
+def b64(orig, url, convert):
+    """Convert to or from base64 encoded string"""
+    altchars = b'-_' if url else None
+
+    if orig == 'from':
+        convert = bytes(convert[0], encoding='utf-8')
+        decoded = base64.b64decode(convert, altchars=altchars)
+        click.echo(decoded)
+    elif orig == 'to':
+        convert = bytes(' '.join(convert), encoding='utf-8')
+        encoded = base64.b64encode(convert, altchars=altchars)
+        click.echo(encoded)
 
 
 @cli.command(name='bin')
