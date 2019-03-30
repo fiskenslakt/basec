@@ -52,7 +52,10 @@ def binary(orig, text, no_space, convert):
             # then convert each character to binary
             decimal = map(ord, ' '.join(convert))
             bytes_ = [bin(n)[2:] for n in decimal]
-            click.echo(' '.join(bytes_))
+            if no_space:
+                click.echo(''.join(bytes_))
+            else:
+                click.echo(' '.join(bytes_))
         # decimal to binary
         else:
             # convert each decimal number to binary
