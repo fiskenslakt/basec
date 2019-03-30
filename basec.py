@@ -17,7 +17,7 @@ def cli():
 @click.option('--url', '-u', is_flag=True, help='Use url-safe alternative characters (hyphen and underscore)')
 @click.argument('convert', nargs=-1, required=True)
 def b64(orig, url, convert):
-    """Convert to or from base64 encoded string"""
+    """Convert to or from base64 encoded string."""
     altchars = b'-_' if url else None
 
     if orig == 'from':
