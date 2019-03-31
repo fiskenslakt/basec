@@ -95,7 +95,10 @@ def binary(orig, text, no_space, convert):
         # decimal to binary
         else:
             # convert each decimal number to binary
-            binary = [bin(int(n))[2:] for n in convert]
+            try:
+                binary = [bin(int(n))[2:] for n in convert]
+            except ValueError:
+                raise click.BadArgumentUsage('Must provide a number')
             click.echo(' '.join(binary))
 
 
