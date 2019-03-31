@@ -56,27 +56,42 @@ def binary(orig, text, no_space, convert):
         if text:
             # get decimal representation for each byte
             # then convert each decimal to a character
-            decimal = [int(byte,2) for byte in bytes_]
-            text = ''.join(map(chr, decimal))
+            # raise error if number can't be converted
+            decimal = [int(byte, 2) for byte in bytes_]
+
+            try:
+                text = ''.join(map(chr, decimal))
+            except (ValueError, OverflowError):
+                raise click.BadArgumentUsage('Number too large to convert to text')
+
             click.echo(text)
         # binary to decimal
         else:
             # get decimal representation of each "byte"
             # casted to a string
-            decimal = [str(int(byte,2)) for byte in bytes_]
+            decimal = [str(int(byte, 2)) for byte in bytes_]
             click.echo(' '.join(decimal))
 
     elif orig == 'to':
         # text to binary
         if text:
             # get ordinal for each character in string
-            # then convert each character to binary
-            decimal = map(ord, ' '.join(convert))
-            bytes_ = [bin(n)[2:] for n in decimal]
+            decimal = [ord(c) for c in ' '.join(convert)]
+
+            if no_space and any(n > 255 for n in decimal):
+                raise click.BadOptionUsage(
+                    'no_space',
+                    'One or more characters require more than 8 bits, cannot use --no-space flag'
+                    )
+
+            # use format() for conversion and 0 padding
+            bytes_ = [format(n, '08b') for n in decimal]
+
             if no_space:
                 click.echo(''.join(bytes_))
             else:
                 click.echo(' '.join(bytes_))
+
         # decimal to binary
         else:
             # convert each decimal number to binary
