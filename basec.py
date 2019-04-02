@@ -30,8 +30,22 @@ def b64(orig, url, convert):
         click.echo(encoded)
 
 
+@cli.command(name='hex')
+@click.option('--from', '-f', 'orig', flag_value='from', help='Convert from hexadecimal to decimal')
+@click.option('--to', '-t', 'orig', flag_value='to', help='Convert to hexadecimal from decimal')
+@click.argument('convert', nargs=-1, required=True)
+def hexadecimal(orig, convert):
+    """Convert to or from hexadecimal."""
+    if orig == 'from':
+        decimal = [int(i, 16) for i in convert]
+        click.echo(' '.join(str(d) for d in decimal))
+    elif orig == 'to':
+        hex_ = [hex(int(i)) for i in convert]
+        click.echo(' '.join(hex_))
+
+
 @cli.command(name='bin')
-@click.option('--from', '-f', 'orig', flag_value='from', help='Convert binary number(s) to decimal')
+@click.option('--from', '-f', 'orig', flag_value='from', help='Convert binary number(s) to decimal or text')
 @click.option('--to', '-t', 'orig', flag_value='to', help='Convert number or text to binary')
 @click.option('--text/--num', '-T/-n', default=False, help='Type to convert from or to (default is num)')
 @click.option('--no-space', '-S', is_flag=True, help='Indicate the string of bytes has no spaces between each byte')
